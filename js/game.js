@@ -3,13 +3,14 @@ const grid = document.querySelector('.grid');
 const characters = [
     'beth',
     'jerry',
-    'jesica',
+    'jessica',
+    'meeseeks',
     'morty',
     'pessoa-passaro',
+    'pickle-rick',
     'rick',
-    'summer',
-    'meeseeks',
     'scroopy',
+    'summer',
 ];
 
 const createElement = (tag, className) => {
@@ -18,31 +19,94 @@ const createElement = (tag, className) => {
     return element;
 }
 
+let fistCard = '';
+let secondCard = '';
+
+const checkEndGame = () => {
+    const disableCards = document.querySelectorAll('.disabled__card');
+
+    if (disableCards.length === 20) {
+        alert('Parabéns, você conseguiu!')
+    }
+}
+
+const checkCards = () => {
+    const fistCharacter = fistCard.getAttribute('data-character');
+    const secondCharacter = secondCard.getAttribute('data-character');
+
+    if(fistCharacter === secondCharacter){
+
+        fistCard.firstChild.classList.add('disabled__card')
+        secondCard.firstChild.classList.add('disabled__card')
+
+        fistCard = '';
+        secondCard = '';
+        
+        checkEndGame();
+
+    } else {
+
+        setTimeout(() => {
+        fistCard.classList.remove('reveal__card');
+        secondCard.classList.remove('reveal__card');
+
+        fistCard = '';
+        secondCard = '';
+
+        
+
+        }, 500);
+    }
+}
+
+    const revealCard = ({ target }) => {
+
+        if (target.parentNode.className.includes('reveal__card')){
+            return;
+        }
+
+        if(fistCard === ''){
+
+            target.parentNode.classList.add('reveal__card');
+            fistCard = target.parentNode;
+
+        } else if (secondCard === '') {
+            target.parentNode.classList.add('reveal__card');
+            secondCard = target.parentNode;
+
+            checkCards()
+        }
+
+
+    }
 
 const createCard = (character) => {
 
-    const card = document.createElement('div', 'card');
-    const front = document.createElement('div', 'face front');
-    const back = document.createElement('div', 'face back');
+    const card = createElement('div', 'card');
+    const front = createElement('div', 'face front');
+    const back = createElement('div', 'face back');
 
-    front.style.backgroundImage = `url('../img/${character}.png')`;
+    front.style.backgroundImage = `url(../img/${character}.png)`;
 
     card.appendChild(front);
     card.appendChild(back);
+
+    card.addEventListener('click', revealCard);
+    card.setAttribute('data-character', character);
 
     return card;
 }
 
 const loadGame = () => {
+    const duplicateCharacters = [ ...characters, ...characters];
 
-    const duplicateCharacters = [ ...characters, ...characters ];
+    const shuffledArray = duplicateCharacters.sort(() => Math.random() - 0.5);
 
-    duplicateCharacters.forEach((character) => {
-        
+    shuffledArray.forEach((character) => {
         const card = createCard(character);
-        grid.appendChild(card);
+        grid.appendChild(card)
+    });
 
-    })
 }
 
-loadGame()
+loadGame();
