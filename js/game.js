@@ -125,6 +125,6 @@ const startTime = () => {
 
 window.onload = () => {
     spanPlayer.innerHTML = localStorage.getItem('player');
-    //startTime()
+    startTime()
     loadGame();
 }
